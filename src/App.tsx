@@ -1,29 +1,75 @@
-import { useState } from 'react'
-import { InputSelect } from './form/InputSelect/InputSelect'
-import { mockOptions } from './mockOptions'
-import { Select } from 'antd'
+import { useEffect, useState } from 'react'
+import { Button } from 'antd'
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { setUsers } from './store/userSlice'
 import './App.css'
 
+// Демонстрация проблемы неявных связей
 function App() {
-  const [value, setValue] = useState<string | undefined | null>()
+  const [currentTab, setCurrentTab] = useState<'tab1' | 'tab2'>('tab1')
 
   return (
     <div className='window'>
-      <InputSelect<string>
-        className='field пвыпыв'
-        label='Выберите пользователя'
-        value={value}
-        onChange={setValue}
-        notFoundContent={'Ничего не найдено'}
-      >
-        {mockOptions.map(option => 
-          <Select.Option key={option.value} value={option.value}>
-            {option.label}
-          </Select.Option>
-        )}
-      </InputSelect>
+      <div>
+        <Button onClick={() => setCurrentTab('tab1')}>Tab 1</Button>
+        <Button onClick={() => setCurrentTab('tab2')}>Tab 2</Button>
+      </div>
+      
+      {currentTab === 'tab1' && (
+        <ComponentA />
+      )}
+
+      {currentTab === 'tab2' && (
+        <ComponentB />
+      )}
     </div>
   )
 }
+
+const ComponentA = () => {
+  const users = useSelector<any>(state => state.users.users) as []
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (users.length === 0)
+      dispatch(setUsers(usersMock))
+  }, [])
+
+  return (
+    <div>
+      ComponentA:
+      <ul>
+        {users.map(userName => <li>{userName}</li>)}
+      </ul>
+    </div>
+  )
+}
+
+const ComponentB = () => {
+  const users = useSelector<any>(state => state.users.users) as []
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(setUsers(usersMock.filter(userName => userName.startsWith('Jon'))))
+  }, [])
+
+  return (
+    <div>
+      ComponentB
+      <ul>
+        {users.map(userName => <li>{userName}</li>)}
+      </ul>
+    </div>
+  )
+}
+
+const usersMock = [
+  'Jon Hovever',
+  'Kali Djiner',
+  'Molly Safer',
+  'Adrian Moligan',
+  'Hristofer Nollan'
+]
 
 export default App
