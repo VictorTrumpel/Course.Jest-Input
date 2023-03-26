@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button } from 'antd'
-import { useSelector } from 'react-redux'
-import { useDispatch } from 'react-redux'
-import { setUsers } from './store/userSlice'
+import { userApi } from './api/userApi/userApi'
 import './App.css'
 
 // Демонстрация проблемы неявных связей
@@ -28,37 +26,46 @@ function App() {
 }
 
 const ComponentA = () => {
-  const users = useSelector<any>(state => state.users.users) as []
-  const dispatch = useDispatch()
+  const { data, isFetching } = userApi.useGetListQuery({ page: 1, perPage: 20 })
+  const { listOptions } = data || { listOptions: [] }
 
   useEffect(() => {
-    if (users.length === 0)
-      dispatch(setUsers(usersMock))
-  }, [])
+    console.log(data)
+  }, [data])
+
+  if (isFetching) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div>
       ComponentA:
       <ul>
-        {users.map(userName => <li>{userName}</li>)}
+        {listOptions.map(user => <li>{user.fullName}</li>)}
       </ul>
     </div>
   )
 }
 
 const ComponentB = () => {
-  const users = useSelector<any>(state => state.users.users) as []
-  const dispatch = useDispatch()
+  const [options, setOptions] = useState({ page: 1, perPage: 20 })
+  const { data, isFetching } = userApi.useGetListQuery(options)
+  const { listOptions } = data || { listOptions: [] }
 
-  useEffect(() => {
-    dispatch(setUsers(usersMock.filter(userName => userName.startsWith('Jon'))))
-  }, [])
+  const updateOptions = () => {
+    setOptions({ page: 2, perPage: 20 })
+  }
+
+  if (isFetching) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div>
-      ComponentB
+      ComponentB:
+      <Button onClick={updateOptions}>update options</Button>
       <ul>
-        {users.map(userName => <li>{userName}</li>)}
+        {listOptions.map(user => <li>{user.fullName}</li>)}
       </ul>
     </div>
   )
