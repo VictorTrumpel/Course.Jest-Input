@@ -1,0 +1,9 @@
+.custorm-field-wrapper.gradient-loading-block {
+  height: 40px;
+  border-radius: 8px;
+}
+
+.custorm-field-wrapper .last-option {
+  display: flex;
+  justify-content: center;
+}

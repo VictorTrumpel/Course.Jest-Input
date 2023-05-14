@@ -8,7 +8,7 @@ type InputSelectOption = {
   label: unknown
 }
 
-type InputSelectProps<ValueType extends InputSelectOption['value']> = {
+export type InputSelectProps<ValueType extends InputSelectOption['value']> = {
   label?: string
 } & Omit<
   SelectProps<ValueType>, 

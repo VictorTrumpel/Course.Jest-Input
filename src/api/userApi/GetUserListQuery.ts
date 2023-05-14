@@ -2,7 +2,7 @@ import { UserConstructor, IUser } from './UserConstructor'
 import QueryString from 'query-string'
 import snakedKeys from 'snakecase-keys'
 
-type UserListQueryParams = {
+export type UserListQueryParams = {
   page: number
   perPage: number
   searchText?: string
@@ -41,5 +41,5 @@ export class GetUserListQuery {
       console.error('server error ', e)
     }
   }
-  
+
 }
